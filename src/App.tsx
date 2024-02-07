@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 
-import Timer from './components/Timer';
 import Settings from './components/Settings';
+import Timer from './components/Timer';
 
 interface SettingsChangeProps {
   focusTime: number;
@@ -26,7 +26,7 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div className="container">
       <div>Trying to Focus</div>
 
       <br />

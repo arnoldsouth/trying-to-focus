@@ -37,7 +37,7 @@ const Settings: React.FC<SettingsProps> = ({
   };
 
   return (
-    <div>
+    <>
       <div>Settings</div>
 
       <form onSubmit={handleSubmitSettingsChange}>
@@ -87,7 +87,7 @@ const Settings: React.FC<SettingsProps> = ({
 
         <button type="submit">Apply</button>
       </form>
-    </div>
+    </>
   );
 };
 
