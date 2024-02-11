@@ -132,7 +132,7 @@ const useTimerLogic = (
 
     if (isCountingDown && secondsRemaining > 0) {
       interval = setInterval(() => {
-        setSecondsRemaining((prevSeconds: number) => prevSeconds - 60);
+        setSecondsRemaining((prevSeconds: number) => prevSeconds - 1);
       }, 1000);
     } else if (secondsRemaining === 0) {
       handleStartStage();
