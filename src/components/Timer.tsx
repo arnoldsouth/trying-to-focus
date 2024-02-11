@@ -28,6 +28,7 @@ const Timer: React.FC<TimerProps> = ({
     handleNextStage,
     stageName,
     handleStartStage,
+    handleCompletedCycleCount,
   } = useTimerLogic(
     focusTime,
     shortBreakTime,

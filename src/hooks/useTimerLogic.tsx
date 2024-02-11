@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const useTimerLogic = (
   focusTime: number,
@@ -14,9 +14,15 @@ const useTimerLogic = (
   const [longBreakCount, setLongBreakCount] = useState(0);
   const [completedCycleCount, setCompletedCycleCount] = useState(0);
 
-  const handleStartStage = useCallback(() => {
-    // setIsCountingDown(true);
+  const handleCompletedCycleCount = useCallback(() => {
+    if (focusCount % 2 === 0) {
+      if (currentStage === 3) {
+        setCompletedCycleCount(completedCycleCount + 1);
+      }
+    }
+  }, [completedCycleCount, focusCount, currentStage]);
 
+  const handleStartStage = useCallback(() => {
     switch (currentStage) {
       case 0:
         setFocusCount(focusCount + 1);
@@ -32,6 +38,7 @@ const useTimerLogic = (
         break;
       case 3:
         setLongBreakCount(longBreakCount + 1);
+        // setCompletedCycleCount(completedCycleCount + 1);
         // setSecondsRemaining(longBreakTime * 60);
         break;
       default:
@@ -45,6 +52,7 @@ const useTimerLogic = (
     // longBreakTime,
     shortBreakCount,
     // shortBreakTime,
+    // completedCycleCount,
   ]);
 
   const handleNextStage = useCallback(() => {
@@ -78,16 +86,12 @@ const useTimerLogic = (
     }
 
     setCurrentStage(nextStage);
-
-    if (nextStage === 0) {
-      setCompletedCycleCount(completedCycleCount + 1);
-    }
   }, [
-    focusCount,
-    shortBreakCount,
-    longBreakCount,
+    // focusCount,
+    // shortBreakCount,
+    // longBreakCount,
     currentStage,
-    completedCycleCount,
+    // completedCycleCount,
     focusTime,
     shortBreakTime,
     longBreakTime,
@@ -128,25 +132,28 @@ const useTimerLogic = (
 
     if (isCountingDown && secondsRemaining > 0) {
       interval = setInterval(() => {
-        setSecondsRemaining((prevSeconds: number) => prevSeconds - 1);
+        setSecondsRemaining((prevSeconds: number) => prevSeconds - 60);
       }, 1000);
     } else if (secondsRemaining === 0) {
       handleStartStage();
       handleNextStage();
+      handleCompletedCycleCount();
     }
 
     // Clear interval when component unmounts
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isCountingDown, secondsRemaining, handleNextStage, handleStartStage]);
+  }, [
+    isCountingDown,
+    secondsRemaining,
+    handleNextStage,
+    handleStartStage,
+    handleCompletedCycleCount,
+  ]);
 
   const toggleTimer = () => {
     setIsCountingDown(!isCountingDown);
-
-    if (!isCountingDown) {
-      handleStartStage();
-    }
   };
 
   const timerOptions = (stage: number) => {
@@ -204,6 +211,7 @@ const useTimerLogic = (
     handleNextStage,
     stageName,
     handleStartStage,
+    handleCompletedCycleCount,
   };
 };
 
