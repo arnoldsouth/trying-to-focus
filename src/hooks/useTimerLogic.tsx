@@ -9,10 +9,43 @@ const useTimerLogic = (
   const [secondsRemaining, setSecondsRemaining] = useState(focusTime * 60);
   const [currentStage, setCurrentStage] = useState(0);
   const [isCountingDown, setIsCountingDown] = useState(false);
-  const [focusCount, setFocusCount] = useState(1);
+  const [focusCount, setFocusCount] = useState(0);
   const [shortBreakCount, setShortBreakCount] = useState(0);
   const [longBreakCount, setLongBreakCount] = useState(0);
   const [completedCycleCount, setCompletedCycleCount] = useState(0);
+
+  const handleStartStage = useCallback(() => {
+    // setIsCountingDown(true);
+
+    switch (currentStage) {
+      case 0:
+        setFocusCount(focusCount + 1);
+        // setSecondsRemaining(focusTime * 60);
+        break;
+      case 1:
+        setShortBreakCount(shortBreakCount + 1);
+        // setSecondsRemaining(shortBreakTime * 60);
+        break;
+      case 2:
+        setFocusCount(focusCount + 1);
+        // setSecondsRemaining(focusTime * 60);
+        break;
+      case 3:
+        setLongBreakCount(longBreakCount + 1);
+        // setSecondsRemaining(longBreakTime * 60);
+        break;
+      default:
+        break;
+    }
+  }, [
+    currentStage,
+    focusCount,
+    // focusTime,
+    longBreakCount,
+    // longBreakTime,
+    shortBreakCount,
+    // shortBreakTime,
+  ]);
 
   const handleNextStage = useCallback(() => {
     setIsCountingDown(false);
@@ -21,22 +54,22 @@ const useTimerLogic = (
 
     switch (nextStage) {
       case 0:
-        setFocusCount(focusCount + 1);
+        // setFocusCount(focusCount + 1);
         // setLongBreakCount(longBreakCount + 1);
         setSecondsRemaining(focusTime * 60);
         break;
       case 1:
-        setShortBreakCount(shortBreakCount + 1);
+        // setShortBreakCount(shortBreakCount + 1);
         // setFocusCount(focusCount + 1);
         setSecondsRemaining(shortBreakTime * 60);
         break;
       case 2:
-        setFocusCount(focusCount + 1);
+        // setFocusCount(focusCount + 1);
         // setShortBreakCount(shortBreakCount + 1);
         setSecondsRemaining(focusTime * 60);
         break;
       case 3:
-        setLongBreakCount(longBreakCount + 1);
+        // setLongBreakCount(longBreakCount + 1);
         // setFocusCount(focusCount + 1);
         setSecondsRemaining(longBreakTime * 60);
         break;
@@ -98,6 +131,7 @@ const useTimerLogic = (
         setSecondsRemaining((prevSeconds: number) => prevSeconds - 1);
       }, 1000);
     } else if (secondsRemaining === 0) {
+      handleStartStage();
       handleNextStage();
     }
 
@@ -105,10 +139,14 @@ const useTimerLogic = (
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isCountingDown, secondsRemaining, handleNextStage]);
+  }, [isCountingDown, secondsRemaining, handleNextStage, handleStartStage]);
 
   const toggleTimer = () => {
     setIsCountingDown(!isCountingDown);
+
+    if (!isCountingDown) {
+      handleStartStage();
+    }
   };
 
   const timerOptions = (stage: number) => {
@@ -165,6 +203,7 @@ const useTimerLogic = (
     timerOptions,
     handleNextStage,
     stageName,
+    handleStartStage,
   };
 };
 
